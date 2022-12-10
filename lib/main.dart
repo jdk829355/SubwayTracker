@@ -60,9 +60,7 @@ class Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text("Loading")),
-    );
+    return Center(child: Text("Loading", textDirection: TextDirection.ltr));
   }
 }
 
@@ -71,8 +69,6 @@ class SomeWentWrong extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text("Error")),
-    );
+    return Center(child: Text("Error", textDirection: TextDirection.ltr));
   }
 }

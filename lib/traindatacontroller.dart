@@ -56,12 +56,11 @@ class SimpleController extends GetxController {
   };
 
   final regions = <Region>[
-    for (var train in [for (var i = 1; i <= 10; i++) i])
-      Region(
-          identifier: "dxline",
-          proximityUUID: '74278bda-b644-4520-8f0c-720eaf059935',
-          major: train,
-          minor: 19641)
+    Region(
+        identifier: "dxline",
+        proximityUUID: '74278bda-b644-4520-8f0c-720eaf059935',
+        major: 10,
+        minor: 19640)
   ];
 
   void StringListToWidgetList(List<String> stationString) {

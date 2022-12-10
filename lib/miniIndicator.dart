@@ -14,8 +14,8 @@ class _MiniIndicatorState extends State<MiniIndicator> {
   Widget build(BuildContext context) {
     if (Get.find<SimpleController>().scannedLine != "SubwayTracker") {
       return Container(
-        width: MediaQuery.of(context).size.width - 40,
-        height: 40,
+        width: 353,
+        height: 42,
         alignment: Alignment.center,
         child: Padding(
             padding: const EdgeInsets.only(right: 10),
@@ -61,7 +61,7 @@ class _MiniIndicatorState extends State<MiniIndicator> {
       );
     } else {
       return Container(
-        width: MediaQuery.of(context).size.width - 40,
+        width: 353,
         height: 40,
         alignment: Alignment.center,
         child: Padding(

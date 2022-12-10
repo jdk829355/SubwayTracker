@@ -15,7 +15,7 @@ class StationPicker extends StatefulWidget {
 
 class _StationPickerState extends State<StationPicker> {
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
-      .collection('${Get.find<SimpleController>().scannedLine}')
+      .collection(Get.find<SimpleController>().scannedLine)
       .snapshots();
   @override
   void initState() {
@@ -42,6 +42,7 @@ class _StationPickerState extends State<StationPicker> {
                       Get.find<SimpleController>().currentStationNm)
                   .toList()[0];
               var stationList;
+              final stationToGetOff;
 
               if (info["statnNm"] == controller.stationToGetOff) {
                 Get.back();
@@ -62,6 +63,12 @@ class _StationPickerState extends State<StationPicker> {
                 controller.selectedStation = info["statnTnm"];
               }
 
+              if (controller.stationToGetOff == "none") {
+                stationToGetOff = "어디로 갈까요?";
+              } else {
+                stationToGetOff = controller.stationToGetOff;
+              }
+
               return Stack(
                 children: [
                   Opacity(
@@ -77,12 +84,42 @@ class _StationPickerState extends State<StationPicker> {
                     children: [
                       Flexible(
                         child: Padding(
-                            padding: EdgeInsets.only(right: 10, left: 10),
+                            padding: EdgeInsets.only(right: 30, left: 50),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Flexible(flex: 2, child: Container()),
                                 Flexible(
-                                  flex: 3,
+                                    flex: 4,
+                                    child: Container(
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                          const Text(
+                                            "목적지",
+                                            style: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                            width: 120,
+                                          ),
+                                          Text(
+                                            stationToGetOff,
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          SizedBox(
+                                            height: 50,
+                                          ),
+                                        ]))),
+                                Flexible(flex: 1, child: Container()),
+                                Flexible(
+                                  flex: 4,
                                   child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment:
@@ -128,8 +165,8 @@ class _StationPickerState extends State<StationPicker> {
                                             padding: EdgeInsets.only(
                                                 top: 30, bottom: 30),
                                             child: Image(
-                                              image:
-                                                  AssetImage('downArrow.png'),
+                                              image: AssetImage(
+                                                  'downMovingArrow.gif'),
                                             ),
                                           ),
                                         ),

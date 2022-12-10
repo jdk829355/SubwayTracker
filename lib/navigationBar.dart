@@ -24,7 +24,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
-      width: MediaQuery.of(context).size.width - 40,
+      width: 353,
       height: 35,
       alignment: Alignment.center,
       child: Padding(

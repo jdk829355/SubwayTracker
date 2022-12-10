@@ -57,8 +57,50 @@ class _MainPageState extends State<MainPage> {
                     SizedBox(
                       //높이 여백(padding역할)
                       width: double.infinity,
-                      height: 30,
+                      height: 20,
                     ),
+                    Expanded(
+                        child: ListView(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 169,
+                              height: 169,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x3f000000),
+                                    blurRadius: 3,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                                color: Colors.white,
+                              ),
+                            ),
+                            Container(
+                              width: 169,
+                              height: 169,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0x3f000000),
+                                    blurRadius: 3,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ))
                   ],
                 )));
       },
