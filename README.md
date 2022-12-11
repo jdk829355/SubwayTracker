@@ -1,16 +1,3 @@
 # subwaytracker
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+비콘을 이용한 지하철 하차알림 및 실시간 위치 파악 서비스입니다. 프로젝트의 시작과 과정을 알고 싶으시면 ( https://www.notion.so/SubwayTracker-c5b5309538c34338a5414be9f40354ea )로 접속해주세요.
