@@ -5,6 +5,7 @@ import 'traindatacontroller.dart';
 import 'package:flutter/cupertino.dart';
 import 'traindatacontroller.dart';
 import 'local_notification.dart';
+import 'mapWidget.dart';
 
 class StationPicker extends StatefulWidget {
   const StationPicker({super.key});
@@ -52,6 +53,7 @@ class _StationPickerState extends State<StationPicker> {
                 controller.stationToGetOff = "none";
               } else {
                 stationList = controller.slicingStatonList();
+                controller.currentStationListString = stationList;
                 controller.StringListToWidgetList(stationList);
               }
 

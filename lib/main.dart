@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             title: "SubwayTracker",
             home: MainPage(),
             theme: ThemeData(
-                backgroundColor: Colors.white, primarySwatch: Colors.blue),
+                backgroundColor: Color(0xF4F4F4), primarySwatch: Colors.blue),
           );
         }
 

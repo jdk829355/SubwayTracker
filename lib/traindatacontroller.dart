@@ -19,6 +19,8 @@ class SimpleController extends GetxController {
   bool arrived = false;
   var trainData;
   String stationToGetOff = "none";
+  List<String> currentStationListString = [];
+  String currentStationNmForMap = "대기";
 
   Map ColorList = {
     "SubwayTracker": 0xffd3d3d3,
@@ -26,6 +28,26 @@ class SimpleController extends GetxController {
     "신분당선": 0xffD4003B,
     "신림선": 0xff6789CA
   };
+
+  final stationPosition = {
+    '광교': {'stationLat': 37.30211, 'stationLng': 127.044483},
+    '광교중앙': {'stationLat': 37.288617, 'stationLng': 127.051478},
+    '상현': {'stationLat': 37.297664, 'stationLng': 127.069342},
+    '성복': {'stationLat': 37.313335, 'stationLng': 127.0801},
+    '수지구청': {'stationLat': 37.322702, 'stationLng': 127.095026},
+    '동천': {'stationLat': 37.337928, 'stationLng': 127.102976},
+    '미금': {'stationLat': 37.349982, 'stationLng': 127.108918},
+    '정자': {'stationLat': 37.367098, 'stationLng': 127.108403},
+    '판교': {'stationLat': 37.394761, 'stationLng': 127.112217},
+    '청계산입구': {'stationLat': 37.447211, 'stationLng': 127.055664},
+    '양재시민의숲': {'stationLat': 37.470023, 'stationLng': 127.03842},
+    '양재': {'stationLat': 37.483809, 'stationLng': 127.034653},
+    '강남': {'stationLat': 37.496837, 'stationLng': 127.028104},
+    '신논현': {'stationLat': 37.504598, 'stationLng': 127.02506},
+    '논현': {'stationLat': 37.511093, 'stationLng': 127.021415},
+    '신사': {'stationLat': 37.516334, 'stationLng': 127.020114}
+  };
+
   Map LineInfo = {
     "신분당선": {
       "stationNm": [
@@ -134,10 +156,12 @@ class SimpleController extends GetxController {
               } else {
                 scannedLine = currentline;
               }
+              update();
             },
             onError: (e) {
               scannedLine = "SubwayTracker";
               print("Error getting document: $e");
+              update();
             },
           );
         }
