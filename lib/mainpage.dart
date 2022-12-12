@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:subwaytracker/scannedPage.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'traindatacontroller.dart';
 import 'miniIndicator.dart';
 import 'local_notification.dart';
@@ -29,6 +30,11 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     Get.put(SimpleController());
+    if (Get.find<SimpleController>().currentStationNm.string ==
+        Get.find<SimpleController>().stationToGetOff) {
+      Get.find<SimpleController>().arrived = true;
+      Get.find<SimpleController>().update();
+    }
     return Scaffold(body: Center(child: GetBuilder<SimpleController>(
       builder: (controller) {
         controller.update;
@@ -71,27 +77,48 @@ class _MainPageState extends State<MainPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              clipBehavior: Clip.antiAlias,
-                              width: 169,
-                              height: 169,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x3f000000),
-                                    blurRadius: 3,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                                color: Colors.white,
-                              ),
-                              child: Image(
-                                fit: BoxFit.fill,
+                                clipBehavior: Clip.antiAlias,
                                 width: 169,
                                 height: 169,
-                                image: AssetImage('loader.gif'),
-                              ),
-                            ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x3f000000),
+                                      blurRadius: 3,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                  color: Colors.white,
+                                ),
+                                child: MaterialButton(
+                                    onPressed: () {
+                                      launchUrl(
+                                        Uri.parse(
+                                            'https://github.com/jdk829355'),
+                                      );
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "제작자",
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text("github.com/jdk829355",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w400))
+                                      ],
+                                    ))),
                             Spacer(),
                             StatusWidgetInMainPage()
                           ],

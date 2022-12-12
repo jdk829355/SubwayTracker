@@ -28,7 +28,7 @@ ServiceDefinitions.json
 Runner/GeneratedPluginRegistrant.*
 Runner/GoogleService-info.plist
 firebase_app_id_file.json
-
+Runner/key.swift
 # Exceptions to above rules.
 !default.mode1v3
 !default.mode2v3

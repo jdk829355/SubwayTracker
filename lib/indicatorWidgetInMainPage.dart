@@ -54,7 +54,8 @@ class _StatusWidgetInMainPageState extends State<StatusWidgetInMainPage> {
               ]),
           child: MaterialButton(
             onPressed: () {
-              Get.to(ScannedPage());
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ScannedPage()));
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -110,9 +111,9 @@ class _StatusWidgetInMainPageState extends State<StatusWidgetInMainPage> {
                 Visibility(
                   child: Container(
                     child: Text(
-                      "${Get.find<SimpleController>().stationToGetOff == "none" ? "탭하여 역 선택" : Get.find<SimpleController>().stationToGetOff + "행"}",
+                      "${Get.find<SimpleController>().stationToGetOff == "none" ? "터치하여 내릴역 선택" : Get.find<SimpleController>().stationToGetOff + "행"}",
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                     ),
                   ),
                   visible: (Get.find<SimpleController>().scannedLine !=

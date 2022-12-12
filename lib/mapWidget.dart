@@ -24,64 +24,30 @@ class _ScrollMapWidgetState extends State<ScrollMapWidget> {
   static final CameraPosition _kGooglePlex = CameraPosition(
       target: LatLng(
           Get.find<SimpleController>().stationPosition[
-                  Get.find<SimpleController>().currentStationNm]!["stationLat"]
-              as double,
+              Get.find<SimpleController>()
+                  .currentStationNm
+                  .string]!["stationLat"] as double,
           Get.find<SimpleController>().stationPosition[
-                  Get.find<SimpleController>().currentStationNm]!["stationLng"]
-              as double),
-      zoom: 17);
+              Get.find<SimpleController>()
+                  .currentStationNm
+                  .string]!["stationLng"] as double),
+      zoom: 16);
 
   @override
   Widget build(BuildContext context) {
     Get.put(SimpleController());
-    if (Get.find<SimpleController>().currentStationNm ==
-        Get.find<SimpleController>().stationToGetOff) {
-      Get.back();
-      LocalNotification()
-          .sampleNotification(Get.find<SimpleController>().stationToGetOff);
-      Get.find<SimpleController>().arrived = true;
-      Get.find<SimpleController>().stationToGetOff = "none";
+
+    final db = FirebaseFirestore.instance;
+    if (Get.find<SimpleController>().trainNo != null) {
+      final docRef = db
+          .collection(Get.find<SimpleController>().scannedLine)
+          .doc(Get.find<SimpleController>().trainNo);
+      docRef.get().then((DocumentSnapshot doc) {});
     }
 
-    if (Get.find<SimpleController>().scannedLine == "SubwayTracker") {
+    if (Get.find<SimpleController>().scannedLine == "SubwayTracker" ||
+        Get.find<SimpleController>().trainNo == null) {
       return Container(
-        width: 353,
-        height: 440,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x3f000000),
-              blurRadius: 3,
-              offset: Offset(0, 4),
-            ),
-          ],
-          color: Colors.white,
-        ),
-        child: const Center(
-            child: Text(
-          "열차에 탑승하지 않았어요 😢",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        )),
-      );
-    } else {
-      final db = FirebaseFirestore.instance;
-      final docRef = db
-          .collection("${Get.find<SimpleController>().scannedLine}")
-          .doc("${Get.find<SimpleController>().trainNo}");
-
-      docRef.get().then((DocumentSnapshot doc) {
-        final CameraPosition _kGooglePlex = CameraPosition(
-            target: LatLng(
-                Get.find<SimpleController>().stationPosition[
-                    Get.find<SimpleController>()
-                        .currentStationNm]!["stationLat"] as double,
-                Get.find<SimpleController>().stationPosition[
-                    Get.find<SimpleController>()
-                        .currentStationNm]!["stationLng"] as double),
-            zoom: 17);
-        goToTheCurrentStation();
-        return Container(
           width: 353,
           height: 440,
           decoration: BoxDecoration(
@@ -95,54 +61,70 @@ class _ScrollMapWidgetState extends State<ScrollMapWidget> {
             ],
             color: Colors.white,
           ),
-          child: GoogleMap(
-            mapType: MapType.terrain,
-            initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    Get.find<SimpleController>().stationPosition[
-                        Get.find<SimpleController>()
-                            .currentStationNm]!["stationLat"] as double,
-                    Get.find<SimpleController>().stationPosition[
-                        Get.find<SimpleController>()
-                            .currentStationNm]!["stationLng"] as double),
-                zoom: 18),
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-          ),
-        );
-      });
-
-      return Container(
-        width: 353,
-        height: 440,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x3f000000),
-              blurRadius: 3,
-              offset: Offset(0, 4),
+          child: MaterialButton(
+            onPressed: (() {
+              Get.find<SimpleController>().arrived = false;
+            }),
+            child: Center(
+                child: Text(
+              Get.find<SimpleController>().arrived == true
+                  ? "터치하여 다시 스캔"
+                  : "열차에 탑승하지 않았어요 😢",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            )),
+          ));
+    } else {
+      goToTheCurrentStation();
+      return Obx((() {
+        return Container(
+            width: 353,
+            height: 440,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x3f000000),
+                  blurRadius: 3,
+                  offset: Offset(0, 4),
+                ),
+              ],
+              color: Colors.white,
             ),
-          ],
-          color: Colors.white,
-        ),
-        child: GoogleMap(
-          mapType: MapType.terrain,
-          initialCameraPosition: CameraPosition(
-              target: LatLng(
-                  Get.find<SimpleController>().stationPosition[
-                      Get.find<SimpleController>()
-                          .currentStationNm]!["stationLat"] as double,
-                  Get.find<SimpleController>().stationPosition[
-                      Get.find<SimpleController>()
-                          .currentStationNm]!["stationLng"] as double),
-              zoom: 17),
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-        ),
-      );
+            child: GoogleMap(
+              scrollGesturesEnabled: false,
+              zoomControlsEnabled: false,
+              zoomGesturesEnabled: false,
+              trafficEnabled: true,
+              myLocationButtonEnabled: false,
+              myLocationEnabled: false,
+              mapType: MapType.terrain,
+              initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                      Get.find<SimpleController>().stationPosition[Get.find<SimpleController>().currentStationNm.string] == null
+                          ? 0.0
+                          : Get.find<SimpleController>().stationPosition[
+                              Get.find<SimpleController>()
+                                  .currentStationNm
+                                  .string]!["stationLat"] as double,
+                      Get.find<SimpleController>().stationPosition[Get.find<SimpleController>()
+                                  .currentStationNm
+                                  .string] ==
+                              null
+                          ? 0.0
+                          : Get.find<SimpleController>().stationPosition[
+                              Get.find<SimpleController>()
+                                  .currentStationNm
+                                  .string]!["stationLng"] as double),
+                  zoom: 16),
+              onMapCreated: (GoogleMapController controller) {
+                if (Get.find<SimpleController>().counter == 0) {
+                  Get.find<SimpleController>().counter = 1;
+                  _controller.complete(controller);
+                }
+                goToTheCurrentStation();
+              },
+            ));
+      }));
     }
   }
 
@@ -151,12 +133,23 @@ class _ScrollMapWidgetState extends State<ScrollMapWidget> {
     controller.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
           target: LatLng(
+              Get.find<SimpleController>().stationPosition[Get.find<SimpleController>().currentStationNm.string] ==
+                      null
+                  ? 0.0
+                  : Get.find<SimpleController>().stationPosition[
+                      Get.find<SimpleController>()
+                          .currentStationNm
+                          .string]!["stationLat"] as double,
               Get.find<SimpleController>().stationPosition[
-                  Get.find<SimpleController>()
-                      .currentStationNm]!["stationLat"] as double,
-              Get.find<SimpleController>().stationPosition[
-                  Get.find<SimpleController>()
-                      .currentStationNm]!["stationLng"] as double),
+                          Get.find<SimpleController>()
+                              .currentStationNm
+                              .string] ==
+                      null
+                  ? 0.0
+                  : Get.find<SimpleController>().stationPosition[
+                      Get.find<SimpleController>()
+                          .currentStationNm
+                          .string]!["stationLng"] as double),
           zoom: 17),
     ));
   }

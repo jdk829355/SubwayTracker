@@ -1,11 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:subwaytracker/mainpage.dart';
-import 'package:subwaytracker/scannedPage.dart';
+import 'package:subwaytracker/local_notification.dart';
 
 class SimpleController extends GetxController {
   Map idToStation = {"line5": "5호선", "dxline": "신분당선", "slline": "신림선"};
@@ -13,14 +13,14 @@ class SimpleController extends GetxController {
   RxString line = "SubwayTracker".obs;
   List<Widget> currentStationList = [];
   String scannedLine = "SubwayTracker";
-  late String trainNo;
-  String currentStationNm = "loading...";
+  String? trainNo = null;
+  RxString currentStationNm = "loading...".obs;
   late List pickerStationList;
   bool arrived = false;
   var trainData;
   String stationToGetOff = "none";
   List<String> currentStationListString = [];
-  String currentStationNmForMap = "대기";
+  int counter = 0;
 
   Map ColorList = {
     "SubwayTracker": 0xffd3d3d3,
@@ -81,7 +81,7 @@ class SimpleController extends GetxController {
     Region(
         identifier: "dxline",
         proximityUUID: '74278bda-b644-4520-8f0c-720eaf059935',
-        major: 10,
+        major: 16,
         minor: 19640)
   ];
 
@@ -136,9 +136,9 @@ class SimpleController extends GetxController {
       if (result.beacons.length > 0) {
         //scan되었을 때
         if (arrived) {
-          scannedLine = "SubwayTracker";
-          arrived = false;
           Get.back();
+          scannedLine = "SubwayTracker";
+          stationToGetOff = "none";
         } else {
           print(result.region.identifier);
           trainNo = result.region.major.toString();
@@ -149,12 +149,17 @@ class SimpleController extends GetxController {
           docRef.get().then(
             (DocumentSnapshot doc) {
               trainData = doc.data() as Map<String, dynamic>;
-              currentStationNm = trainData["statnNm"];
-              if (trainData["statnTnm"] == currentStationNm) {
+              updateCurrentStationNm(trainData["statnNm"]);
+              if (trainData["statnTnm"] == currentStationNm.string) {
                 Get.back();
                 scannedLine = "SubwayTracker";
               } else {
                 scannedLine = currentline;
+              }
+
+              if (currentStationNm.string == stationToGetOff) {
+                arrived = true;
+                localNotification.sampleNotification(stationToGetOff);
               }
               update();
             },
@@ -175,6 +180,14 @@ class SimpleController extends GetxController {
         updateLine("SubwayTracker");
       }
     }); // to stop monitoring beacons
+  }
+
+  void updateCurrentStationNm(name) {
+    WidgetsBinding.instance!.addPostFrameCallback(
+      (timeStamp) {
+        currentStationNm.value = name;
+      },
+    );
   }
 
   Widget StringToWidget(String station) {

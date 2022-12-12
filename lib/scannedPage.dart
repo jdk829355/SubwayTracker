@@ -39,6 +39,16 @@ class _ScannedPageState extends State<ScannedPage> {
             stream: _usersStream,
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (controller.currentStationNm.string ==
+                  controller.stationToGetOff) {
+                Get.find<SimpleController>().arrived = true;
+                Get.find<SimpleController>().stationToGetOff = "none";
+                return Scaffold(
+                  body: Center(
+                    child: Text('loading...'),
+                  ),
+                );
+              }
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Text("Loading");
               }

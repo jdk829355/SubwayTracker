@@ -47,17 +47,17 @@ class _MiniIndicatorState extends State<MiniIndicator> {
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 25,
-                              fontFamily: "Roboto",
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Text(
-                            "${Get.find<SimpleController>().currentStationNm}",
+                            Get.find<SimpleController>()
+                                .currentStationNm
+                                .string,
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 20,
-                              fontFamily: "Roboto",
                               fontWeight: FontWeight.w400,
                             ),
                           ),

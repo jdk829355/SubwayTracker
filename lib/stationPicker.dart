@@ -40,18 +40,12 @@ class _StationPickerState extends State<StationPicker> {
               final info = snapshot.data!.docs
                   .where((e) =>
                       e["statnNm"] ==
-                      Get.find<SimpleController>().currentStationNm)
+                      Get.find<SimpleController>().currentStationNm.value)
                   .toList()[0];
               var stationList;
               final stationToGetOff;
 
-              if (info["statnNm"] == controller.stationToGetOff) {
-                Get.back();
-                LocalNotification()
-                    .sampleNotification(controller.stationToGetOff);
-                controller.arrived = true;
-                controller.stationToGetOff = "none";
-              } else {
+              if (info["statnNm"] != controller.stationToGetOff) {
                 stationList = controller.slicingStatonList();
                 controller.currentStationListString = stationList;
                 controller.StringListToWidgetList(stationList);
