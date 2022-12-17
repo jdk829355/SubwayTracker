@@ -3,13 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:subwaytracker/stationPicker.dart';
 import 'firebase_options.dart';
 import 'traindatacontroller.dart';
-import 'navigationBar.dart';
-import 'navigationBar.dart';
-import 'informationPanel.dart';
-import 'scannedPage.dart';
 import 'mainpage.dart';
 import 'local_notification.dart';
 

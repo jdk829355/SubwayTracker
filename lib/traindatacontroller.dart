@@ -81,7 +81,7 @@ class SimpleController extends GetxController {
     Region(
         identifier: "dxline",
         proximityUUID: '74278bda-b644-4520-8f0c-720eaf059935',
-        major: 16,
+        major: 11,
         minor: 19640)
   ];
 
@@ -135,41 +135,35 @@ class SimpleController extends GetxController {
       print(result.beacons);
       if (result.beacons.length > 0) {
         //scan되었을 때
-        if (arrived) {
-          Get.back();
-          scannedLine = "SubwayTracker";
-          stationToGetOff = "none";
-        } else {
-          print(result.region.identifier);
-          trainNo = result.region.major.toString();
-          final currentline = idToStation[result.region.identifier.toString()];
-
-          final db = FirebaseFirestore.instance;
-          final docRef = db.collection("${currentline}").doc("${trainNo}");
-          docRef.get().then(
-            (DocumentSnapshot doc) {
-              trainData = doc.data() as Map<String, dynamic>;
-              updateCurrentStationNm(trainData["statnNm"]);
-              if (trainData["statnTnm"] == currentStationNm.string) {
-                Get.back();
-                scannedLine = "SubwayTracker";
-              } else {
-                scannedLine = currentline;
-              }
-
-              if (currentStationNm.string == stationToGetOff) {
-                arrived = true;
-                localNotification.sampleNotification(stationToGetOff);
-              }
-              update();
-            },
-            onError: (e) {
+        print(result.region.identifier);
+        trainNo = result.region.major.toString();
+        final currentline = idToStation[result.region.identifier.toString()];
+        final db = FirebaseFirestore.instance;
+        final docRef = db.collection("${currentline}").doc("${trainNo}");
+        docRef.get().then(
+          (DocumentSnapshot doc) {
+            trainData = doc.data() as Map<String, dynamic>;
+            updateCurrentStationNm(trainData["statnNm"]);
+            if (trainData["statnTnm"] == currentStationNm.string) {
+              Get.back();
               scannedLine = "SubwayTracker";
-              print("Error getting document: $e");
-              update();
-            },
-          );
-        }
+              stationToGetOff = "none";
+            } else {
+              scannedLine = currentline;
+            }
+
+            if (currentStationNm.string == stationToGetOff) {
+              stationToGetOff = "none";
+              LocalNotification().sampleNotification(stationToGetOff);
+            }
+            update();
+          },
+          onError: (e) {
+            scannedLine = "SubwayTracker";
+            print("Error getting document: $e");
+            update();
+          },
+        );
 
         updateLine(scannedLine);
         update();

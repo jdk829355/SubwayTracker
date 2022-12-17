@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:subwaytracker/firebase_options.dart';
 import 'package:swipe/swipe.dart';
+import 'local_notification.dart';
 import 'traindatacontroller.dart';
 import 'navigationBar.dart';
 import 'stationPicker.dart';
@@ -30,6 +31,10 @@ class _ScannedPageState extends State<ScannedPage> {
     super.initState();
   }
 
+  void _onAfterBuild(BuildContext context) {
+    Get.find<SimpleController>().stationToGetOff = "none";
+  }
+
   @override
   Widget build(BuildContext context) {
     Get.put(SimpleController());
@@ -41,13 +46,8 @@ class _ScannedPageState extends State<ScannedPage> {
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (controller.currentStationNm.string ==
                   controller.stationToGetOff) {
-                Get.find<SimpleController>().arrived = true;
-                Get.find<SimpleController>().stationToGetOff = "none";
-                return Scaffold(
-                  body: Center(
-                    child: Text('loading...'),
-                  ),
-                );
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _onAfterBuild(context));
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Text("Loading");

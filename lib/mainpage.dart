@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:subwaytracker/scannedPage.dart';
@@ -17,6 +18,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+      .collection('${Get.find<SimpleController>().scannedLine}')
+      .snapshots();
   @override
   void initState() {
     // TODO: implement initState
@@ -30,14 +34,14 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     Get.put(SimpleController());
-    if (Get.find<SimpleController>().currentStationNm.string ==
-        Get.find<SimpleController>().stationToGetOff) {
-      Get.find<SimpleController>().arrived = true;
-      Get.find<SimpleController>().update();
-    }
     return Scaffold(body: Center(child: GetBuilder<SimpleController>(
       builder: (controller) {
         controller.update;
+        if (controller.stationToGetOff == controller.currentStationNm.value &&
+            controller.stationToGetOff != "none") {
+          LocalNotification().sampleNotification(controller.stationToGetOff);
+          controller.stationToGetOff = "none";
+        }
         return Container(
             //전체 화면
             width: double.infinity,
@@ -142,9 +146,11 @@ class _MainPageState extends State<MainPage> {
                             ),
                           ],
                         )),
-                    GetBuilder<SimpleController>(builder: (controller) {
-                      return ScrollMapWidget();
-                    })
+                    StreamBuilder<QuerySnapshot>(
+                        stream: _usersStream,
+                        builder: ((context, snapshot) {
+                          return ScrollMapWidget();
+                        }))
                   ],
                 ))
               ],

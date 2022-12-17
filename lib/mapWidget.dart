@@ -36,6 +36,7 @@ class _ScrollMapWidgetState extends State<ScrollMapWidget> {
   @override
   Widget build(BuildContext context) {
     Get.put(SimpleController());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onAfterBuild(context));
 
     final db = FirebaseFirestore.instance;
     if (Get.find<SimpleController>().trainNo != null) {
@@ -74,7 +75,6 @@ class _ScrollMapWidgetState extends State<ScrollMapWidget> {
             )),
           ));
     } else {
-      goToTheCurrentStation();
       return Obx((() {
         return Container(
             width: 353,
@@ -91,66 +91,49 @@ class _ScrollMapWidgetState extends State<ScrollMapWidget> {
               color: Colors.white,
             ),
             child: GoogleMap(
+              myLocationButtonEnabled: false,
               scrollGesturesEnabled: false,
               zoomControlsEnabled: false,
               zoomGesturesEnabled: false,
               trafficEnabled: true,
-              myLocationButtonEnabled: false,
               myLocationEnabled: false,
               mapType: MapType.terrain,
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                      Get.find<SimpleController>().stationPosition[Get.find<SimpleController>().currentStationNm.string] == null
-                          ? 0.0
-                          : Get.find<SimpleController>().stationPosition[
-                              Get.find<SimpleController>()
-                                  .currentStationNm
-                                  .string]!["stationLat"] as double,
-                      Get.find<SimpleController>().stationPosition[Get.find<SimpleController>()
-                                  .currentStationNm
-                                  .string] ==
-                              null
-                          ? 0.0
-                          : Get.find<SimpleController>().stationPosition[
-                              Get.find<SimpleController>()
-                                  .currentStationNm
-                                  .string]!["stationLng"] as double),
-                  zoom: 16),
+              initialCameraPosition: returnCurrentPosition(
+                  Get.find<SimpleController>().currentStationNm.value),
               onMapCreated: (GoogleMapController controller) {
                 if (Get.find<SimpleController>().counter == 0) {
                   Get.find<SimpleController>().counter = 1;
                   _controller.complete(controller);
                 }
-                goToTheCurrentStation();
               },
             ));
       }));
     }
   }
 
+  void _onAfterBuild(BuildContext context) {
+    goToTheCurrentStation();
+  }
+
+  CameraPosition returnCurrentPosition(stationNm) {
+    return CameraPosition(
+        target: LatLng(
+            Get.find<SimpleController>().stationPosition[stationNm] == null
+                ? 0.0
+                : Get.find<SimpleController>()
+                    .stationPosition[stationNm]!["stationLat"] as double,
+            Get.find<SimpleController>().stationPosition[stationNm] == null
+                ? 0.0
+                : Get.find<SimpleController>()
+                    .stationPosition[stationNm]!["stationLng"] as double),
+        zoom: 16);
+  }
+
   Future<void> goToTheCurrentStation() async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-          target: LatLng(
-              Get.find<SimpleController>().stationPosition[Get.find<SimpleController>().currentStationNm.string] ==
-                      null
-                  ? 0.0
-                  : Get.find<SimpleController>().stationPosition[
-                      Get.find<SimpleController>()
-                          .currentStationNm
-                          .string]!["stationLat"] as double,
-              Get.find<SimpleController>().stationPosition[
-                          Get.find<SimpleController>()
-                              .currentStationNm
-                              .string] ==
-                      null
-                  ? 0.0
-                  : Get.find<SimpleController>().stationPosition[
-                      Get.find<SimpleController>()
-                          .currentStationNm
-                          .string]!["stationLng"] as double),
-          zoom: 17),
+      returnCurrentPosition(
+          Get.find<SimpleController>().currentStationNm.value),
     ));
   }
 }
